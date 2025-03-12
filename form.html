@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PH Cooperative membership</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h2>PH COOPERATIVE MEMBERSHIP</h2>
+    <form id="submit-to-google-sheet">
+        <div class ="form-group">
+        <input type="text" id="name" placeholder="Full Name" required>
+        <input type="tel" id="phone" placeholder="Phone Number" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="address" placeholder="Address" required>
+        <input type="text" id="occupation" placeholder="Occupation" required>
+        <input type="text" id="referralCode" placeholder="Referral Code" readonly>
+        <input type="date" id="date" required>
+        <input type="file" id="signature" accept="image/*" required>
+        </div>
+
+        <label>
+            <input type="checkbox" id="terms" required>
+            <a href="terms.html" target="_blank">Agree to Terms & Conditions</a>
+        </label>
+        <button type="submit" class="submit-btc">Submit</button>
+    </form>
+    <br>
+    <a href="index.html" style="color: #F7931A;">⬅ Go Back</a>
+
+    <script>
+      const scriptURL =                       
+      "https://script.google.com/macros/s/AKfycbwV80-pL_tfjUhFbvbcDGsKw9rGNbhbWhwgzvxVfUTMmMzbcN0DZubH7zpXlZHghX41WQ/exec";      
+      function getReferralCodeFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("ref") || "BTC-" + Math.floor(100000 + Math.random() * 900000);
+        }
+
+        document.getElementById("referralCode").value = getReferralCodeFromURL();
+
+        document.getElementById("membershipForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let formData = {
+                name: document.getElementById("name").value,
+                phone: document.getElementById("phone").value,
+                email: document.getElementById("email").value,
+                address: document.getElementById("address").value,
+                occupation: document.getElementById("occupation").value,
+                referralCode: document.getElementById("referralCode").value,
+                date: document.getElementById("date").value,
+                terms: document.getElementById("terms").checked
+            };
+
+            fetch(googleSheetUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert("Form Submitted Successfully! Referral Code: " + formData.referralCode);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Submission Failed. Please try again.");
+            });
+        });
+    </script>
+</body>
+</html>
